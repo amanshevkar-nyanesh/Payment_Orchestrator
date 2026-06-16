@@ -1,0 +1,89 @@
+spring:
+  application:
+    name: payment-orchestrator
+  datasource:
+    url: jdbc:postgresql://localhost:5432/payment_orchestrator
+    username: postgres
+    password: postgres
+    hikari:
+      maximum-pool-size: 20
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      acks: all
+      properties:
+        spring.json.add.type.headers: false
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+app:
+  jwt:
+    secret: ${JWT_SECRET:your-256-bit-secret-key-for-jwt-signing-change-in-production}
+    expiration-ms: 86400000
+  reconciliation:
+    cron: "0 0 * * * *"
+    stuck-threshold-minutes: 30
+  rate-limit:
+    merchant-requests-per-minute: 100
+  circuit-breaker:
+    failure-threshold: 5
+    cooldown-seconds: 60
+  psp:
+    routing:
+      merchants:
+        M123:
+          - PSP_A
+          - PSP_B
+        M456:
+          - PSP_B
+          - PSP_C
+      default-psps:
+        - PSP_A
+        - PSP_B
+        - PSP_C
+    simulation:
+      PSP_A:
+        success-rate: 0.7
+        timeout-rate: 0.1
+        temporary-failure-rate: 0.1
+        slow-response-ms: 3000
+      PSP_B:
+        success-rate: 0.8
+        timeout-rate: 0.05
+        temporary-failure-rate: 0.1
+        slow-response-ms: 2000
+      PSP_C:
+        success-rate: 0.6
+        timeout-rate: 0.15
+        temporary-failure-rate: 0.15
+        slow-response-ms: 4000
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level [%X{correlationId}] %logger{36} - %msg%n"

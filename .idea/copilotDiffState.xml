@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/archive/EventProcessing.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/archive/EventProcessing.java" />
+              <option name="updatedContent" value="import java.util.Comparator;&#10;import java.util.PriorityQueue;&#10;&#10;public class EventProcessing implements Events {&#10;&#10;    private final ViralScoreCalculator scoreCalculator = new ViralScoreCalculator();&#10;&#10;    @Override&#10;    public void populate() {&#10;        // TODO: implement&#10;    }&#10;&#10;    public PriorityQueue&lt;ViralVideos&gt; getViralVideos(VideoData videoData) {&#10;        double score = scoreCalculator.calculate(videoData);&#10;        videoData.setScore((int) Math.round(score));&#10;&#10;        PriorityQueue&lt;ViralVideos&gt; viralVideos = new PriorityQueue&lt;&gt;(&#10;                Comparator.comparingDouble(ViralVideos::getScore).reversed()&#10;        );&#10;        // TODO: populate queue based on score&#10;&#10;        return viralVideos;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/archive/Events.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/archive/Events.java" />
+              <option name="updatedContent" value="public interface Events {&#10;    void populate();&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/archive/Main.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/archive/Main.java" />
+              <option name="updatedContent" value="// Archived: moved to archive/Main.java&#10;// Original sample main removed from project source&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/archive/VideoData.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/archive/VideoData.java" />
+              <option name="updatedContent" value="public class VideoData {&#10;    int score;&#10;    private long views;&#10;    private long likes;&#10;    private long sharing;&#10;    private long recentTime;&#10;    private long commmentsCount;&#10;    private long subscribers;&#10;&#10;    public VideoData() {&#10;    }&#10;&#10;    public int getScore() {&#10;        return score;&#10;    }&#10;&#10;    public void setScore(int score) {&#10;        this.score = score;&#10;    }&#10;&#10;    public long getViews() {&#10;        return views;&#10;    }&#10;&#10;    public void setViews(long views) {&#10;        this.views = views;&#10;    }&#10;&#10;    public long getLikes() {&#10;        return likes;&#10;    }&#10;&#10;    public void setLikes(long likes) {&#10;        this.likes = likes;&#10;    }&#10;&#10;    public long getSharing() {&#10;        return sharing;&#10;    }&#10;&#10;    public void setSharing(long sharing) {&#10;        this.sharing = sharing;&#10;    }&#10;&#10;    public long getRecentTime() {&#10;        return recentTime;&#10;    }&#10;&#10;    public void setRecentTime(long recentTime) {&#10;        this.recentTime = recentTime;&#10;    }&#10;&#10;    public long getCommmentsCount() {&#10;        return commmentsCount;&#10;    }&#10;&#10;    public void setCommmentsCount(long commmentsCount) {&#10;        this.commmentsCount = commmentsCount;&#10;    }&#10;&#10;    public long getSubscribers() {&#10;        return subscribers;&#10;    }&#10;&#10;    public void setSubscribers(long subscribers) {&#10;        this.subscribers = subscribers;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/archive/ViralScoreCalculator.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/archive/ViralScoreCalculator.java" />
+              <option name="updatedContent" value="public class ViralScoreCalculator {&#10;&#10;    private static final double MAX_RECENCY_DECAY = 0.05;&#10;&#10;    private static final double WEIGHT_VIEWS = 1.0;&#10;    private static final double WEIGHT_LIKES = 1.5;&#10;    private static final double WEIGHT_COMMENTS = 2.5;&#10;    private static final double WEIGHT_SHARES = 4.0;&#10;&#10;    public double calculate(VideoData videoData) {&#10;        double baseScore = calculateEngagementScore(videoData);&#10;        double recencyMultiplier = calculateRecencyMultiplier(videoData.getRecentTime());&#10;        return baseScore * recencyMultiplier;&#10;    }&#10;&#10;    private double calculateEngagementScore(VideoData videoData) {&#10;        double logViews = Math.log1p(videoData.getViews());&#10;        double logLikes = Math.log1p(videoData.getLikes());&#10;        double logComments = Math.log1p(videoData.getCommmentsCount());&#10;        double logShares = Math.log1p(videoData.getSharing());&#10;&#10;        double weightedScore =&#10;                WEIGHT_VIEWS * logViews +&#10;                WEIGHT_LIKES * logLikes +&#10;                WEIGHT_COMMENTS * logComments +&#10;                WEIGHT_SHARES * logShares;&#10;&#10;        long views = Math.max(videoData.getViews(), 1);&#10;        double shareRate = (double) videoData.getSharing() / views;&#10;        double commentRate = (double) videoData.getCommmentsCount() / views;&#10;        double qualityBoost = 1.0 + (2.0 * shareRate) + (1.0 * commentRate);&#10;&#10;        return weightedScore * qualityBoost;&#10;    }&#10;&#10;    /**&#10;     * Recency decay is capped at 5% — engagement metrics dominate, especially on older posts.&#10;     * Fresh content: multiplier = 1.0&#10;     * Fully aged content: multiplier = 0.95 (at most 5% reduction)&#10;     */&#10;    private double calculateRecencyMultiplier(long recentTimeMillis) {&#10;        long now = System.currentTimeMillis();&#10;        long ageHours = Math.max(0, (now - recentTimeMillis) / (1000 * 60 * 60));&#10;&#10;        // 0 = just updated, approaches 1 as the post ages (~72h half-life toward full decay)&#10;        double ageFactor = 1.0 - Math.exp(-ageHours / 72.0);&#10;        double decay = MAX_RECENCY_DECAY * ageFactor;&#10;&#10;        return 1.0 - decay;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/archive/ViralVideos.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/archive/ViralVideos.java" />
+              <option name="updatedContent" value="public class ViralVideos {&#10;    String userID;&#10;    String contentID;&#10;    String contentLink;&#10;    double score;&#10;&#10;    public ViralVideos() {&#10;    }&#10;&#10;    public ViralVideos(String userID, String contentID, String contentLink) {&#10;        this.userID = userID;&#10;        this.contentID = contentID;&#10;        this.contentLink = contentLink;&#10;    }&#10;&#10;    public double getScore() {&#10;        return score;&#10;    }&#10;&#10;    public void setScore(double score) {&#10;        this.score = score;&#10;    }&#10;}&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/EventProcessing.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/src/EventProcessing.java" />
+              <option name="originalContent" value="import java.util.Comparator;&#10;import java.util.PriorityQueue;&#10;&#10;public class EventProcessing implements Events {&#10;&#10;    private final ViralScoreCalculator scoreCalculator = new ViralScoreCalculator();&#10;&#10;    @Override&#10;    public void populate() {&#10;        // TODO: implement&#10;    }&#10;&#10;    public PriorityQueue&lt;ViralVideos&gt; getViralVideos(VideoData videoData) {&#10;        double score = scoreCalculator.calculate(videoData);&#10;        videoData.setScore((int) Math.round(score));&#10;&#10;        PriorityQueue&lt;ViralVideos&gt; viralVideos = new PriorityQueue&lt;&gt;(&#10;                Comparator.comparingDouble(ViralVideos::getScore).reversed()&#10;        );&#10;        // TODO: populate queue based on score&#10;&#10;        return viralVideos;&#10;    }&#10;}&#10;" />
+              <option name="updatedContent" value="// Archived: moved to archive/EventProcessing.java&#10;// Original implementation moved out of active source tree.&#10;&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/Events.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/src/Events.java" />
+              <option name="originalContent" value="public interface Events {&#10;    void populate();&#10;}&#10;" />
+              <option name="updatedContent" value="// Archived: moved to archive/Events.java&#10;// Original interface moved out of active source tree.&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/Main.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/src/Main.java" />
+              <option name="originalContent" value="//TIP To &lt;b&gt;Run&lt;/b&gt; code, press &lt;shortcut actionId=&quot;Run&quot;/&gt; or&#10;// click the &lt;icon src=&quot;AllIcons.Actions.Execute&quot;/&gt; icon in the gutter.&#10;public class Main {&#10;    public static void main(String[] args) {&#10;        //TIP Press &lt;shortcut actionId=&quot;ShowIntentionActions&quot;/&gt; with your caret at the highlighted text&#10;        // to see how IntelliJ IDEA suggests fixing it.&#10;        System.out.printf(&quot;Hello and welcome!&quot;);&#10;&#10;        for (int i = 1; i &lt;= 5; i++) {&#10;            //TIP Press &lt;shortcut actionId=&quot;Debug&quot;/&gt; to start debugging your code. We have set one &lt;icon src=&quot;AllIcons.Debugger.Db_set_breakpoint&quot;/&gt; breakpoint&#10;            // for you, but you can always add more by pressing &lt;shortcut actionId=&quot;ToggleLineBreakpoint&quot;/&gt;.&#10;            System.out.println(&quot;i = &quot; + i);&#10;        }&#10;    }&#10;}" />
+              <option name="updatedContent" value="// Archived: moved to archive/Main.java&#10;// Original sample main removed from project source&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/VideoData.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/src/VideoData.java" />
+              <option name="originalContent" value="public class VideoData {&#10;    int score;&#10;    private long views;&#10;    private long likes;&#10;    private long sharing;&#10;    private long recentTime;&#10;    private long commmentsCount;&#10;    private long subscribers;&#10;&#10;    public VideoData() {&#10;    }&#10;&#10;    public int getScore() {&#10;        return score;&#10;    }&#10;&#10;    public void setScore(int score) {&#10;        this.score = score;&#10;    }&#10;&#10;    public long getViews() {&#10;        return views;&#10;    }&#10;&#10;    public void setViews(long views) {&#10;        this.views = views;&#10;    }&#10;&#10;    public long getLikes() {&#10;        return likes;&#10;    }&#10;&#10;    public void setLikes(long likes) {&#10;        this.likes = likes;&#10;    }&#10;&#10;    public long getSharing() {&#10;        return sharing;&#10;    }&#10;&#10;    public void setSharing(long sharing) {&#10;        this.sharing = sharing;&#10;    }&#10;&#10;    public long getRecentTime() {&#10;        return recentTime;&#10;    }&#10;&#10;    public void setRecentTime(long recentTime) {&#10;        this.recentTime = recentTime;&#10;    }&#10;&#10;    public long getCommmentsCount() {&#10;        return commmentsCount;&#10;    }&#10;&#10;    public void setCommmentsCount(long commmentsCount) {&#10;        this.commmentsCount = commmentsCount;&#10;    }&#10;&#10;    public long getSubscribers() {&#10;        return subscribers;&#10;    }&#10;&#10;    public void setSubscribers(long subscribers) {&#10;        this.subscribers = subscribers;&#10;    }&#10;}&#10;" />
+              <option name="updatedContent" value="// Archived: moved to archive/VideoData.java&#10;// Original data model moved out of active source tree.&#10;&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/ViralScoreCalculator.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/src/ViralScoreCalculator.java" />
+              <option name="originalContent" value="public class ViralScoreCalculator {&#10;&#10;    private static final double MAX_RECENCY_DECAY = 0.05;&#10;&#10;    private static final double WEIGHT_VIEWS = 1.0;&#10;    private static final double WEIGHT_LIKES = 1.5;&#10;    private static final double WEIGHT_COMMENTS = 2.5;&#10;    private static final double WEIGHT_SHARES = 4.0;&#10;&#10;    public double calculate(VideoData videoData) {&#10;        double baseScore = calculateEngagementScore(videoData);&#10;        double recencyMultiplier = calculateRecencyMultiplier(videoData.getRecentTime());&#10;        return baseScore * recencyMultiplier;&#10;    }&#10;&#10;    private double calculateEngagementScore(VideoData videoData) {&#10;        double logViews = Math.log1p(videoData.getViews());&#10;        double logLikes = Math.log1p(videoData.getLikes());&#10;        double logComments = Math.log1p(videoData.getCommmentsCount());&#10;        double logShares = Math.log1p(videoData.getSharing());&#10;&#10;        double weightedScore =&#10;                WEIGHT_VIEWS * logViews +&#10;                WEIGHT_LIKES * logLikes +&#10;                WEIGHT_COMMENTS * logComments +&#10;                WEIGHT_SHARES * logShares;&#10;&#10;        long views = Math.max(videoData.getViews(), 1);&#10;        double shareRate = (double) videoData.getSharing() / views;&#10;        double commentRate = (double) videoData.getCommmentsCount() / views;&#10;        double qualityBoost = 1.0 + (2.0 * shareRate) + (1.0 * commentRate);&#10;&#10;        return weightedScore * qualityBoost;&#10;    }&#10;&#10;    /**&#10;     * Recency decay is capped at 5% — engagement metrics dominate, especially on older posts.&#10;     * Fresh content: multiplier = 1.0&#10;     * Fully aged content: multiplier = 0.95 (at most 5% reduction)&#10;     */&#10;    private double calculateRecencyMultiplier(long recentTimeMillis) {&#10;        long now = System.currentTimeMillis();&#10;        long ageHours = Math.max(0, (now - recentTimeMillis) / (1000 * 60 * 60));&#10;&#10;        // 0 = just updated, approaches 1 as the post ages (~72h half-life toward full decay)&#10;        double ageFactor = 1.0 - Math.exp(-ageHours / 72.0);&#10;        double decay = MAX_RECENCY_DECAY * ageFactor;&#10;&#10;        return 1.0 - decay;&#10;    }&#10;}&#10;" />
+              <option name="updatedContent" value="// Archived: moved to archive/ViralScoreCalculator.java&#10;// Original utility moved out of active source tree.&#10;&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/ViralVideos.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/src/ViralVideos.java" />
+              <option name="originalContent" value="public class ViralVideos {&#10;    String userID;&#10;    String contentID;&#10;    String contentLink;&#10;    double score;&#10;&#10;    public ViralVideos() {&#10;    }&#10;&#10;    public ViralVideos(String userID, String contentID, String contentLink) {&#10;        this.userID = userID;&#10;        this.contentID = contentID;&#10;        this.contentLink = contentLink;&#10;    }&#10;&#10;    public double getScore() {&#10;        return score;&#10;    }&#10;&#10;    public void setScore(double score) {&#10;        this.score = score;&#10;    }&#10;}&#10;" />
+              <option name="updatedContent" value="// Archived: moved to archive/ViralVideos.java&#10;// Original model moved out of active source tree.&#10;&#10;" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

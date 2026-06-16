@@ -1,0 +1,3 @@
+com/payment/orchestrator/integration/IdempotencyIntegrationTest.class
+com/payment/orchestrator/PaymentOrchestratorApplicationTests.class
+com/payment/orchestrator/service/PaymentStateMachineTest.class

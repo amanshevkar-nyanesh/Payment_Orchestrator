@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:16-alpine:///payment_orchestrator
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  kafka:
+    bootstrap-servers: ${spring.embedded.kafka.brokers:localhost:9092}
+  flyway:
+    enabled: true
+
+app:
+  jwt:
+    secret: test-secret-key-for-jwt-signing-minimum-256-bits-long!!
+  reconciliation:
+    cron: "0 0 * * * *"
+    stuck-threshold-minutes: 30
