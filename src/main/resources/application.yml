@@ -69,15 +69,15 @@ app:
         - PSP_C
     simulation:
       PSP_A:
-        success-rate: 0.7
-        timeout-rate: 0.1
+        success-rate: 0.0
+        timeout-rate: 0.0
         temporary-failure-rate: 0.1
         slow-response-ms: 3000
       PSP_B:
-        success-rate: 0.8
-        timeout-rate: 0.05
-        temporary-failure-rate: 0.1
-        slow-response-ms: 2000
+        success-rate: 1.0
+        timeout-rate: 0.0
+        temporary-failure-rate: 0.0
+        slow-response-ms: 100
       PSP_C:
         success-rate: 0.6
         timeout-rate: 0.15

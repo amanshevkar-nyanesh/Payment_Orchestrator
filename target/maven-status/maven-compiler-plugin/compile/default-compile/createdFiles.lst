@@ -66,6 +66,7 @@ com/payment/orchestrator/security/JwtService.class
 com/payment/orchestrator/domain/PaymentStateAudit.class
 com/payment/orchestrator/job/ReconciliationJob.class
 com/payment/orchestrator/observability/ObservabilityConfig.class
+com/payment/orchestrator/controller/ReconciliationController.class
 com/payment/orchestrator/dto/PaymentDetailResponse$PaymentDetailResponseBuilder.class
 com/payment/orchestrator/repository/PaymentStateAuditRepository.class
 com/payment/orchestrator/psp/PspClient.class
